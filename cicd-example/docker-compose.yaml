@@ -1,0 +1,14 @@
+version: "3.7"
+services:
+  cicd-example:
+    container_name: cicd-example
+    hostname: cicd-example
+    build:
+      context: .
+      dockerfile: Dockerfile
+    networks:
+      - services
+
+networks:
+  services:
+    external: true

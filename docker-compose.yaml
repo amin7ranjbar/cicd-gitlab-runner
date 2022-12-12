@@ -1,0 +1,33 @@
+version: '3.6'
+services:
+  gitlab:
+    container_name: gitlab
+    image: 'gitlab/gitlab-ee:latest'
+    restart: always
+    volumes:
+      - './config:/etc/gitlab'
+      - './logs:/var/log/gitlab'
+      - './data:/var/opt/gitlab'
+    shm_size: '256m'
+    network_mode: host
+
+  gitlab-runner:
+    container_name: gitlab-runner
+    depends_on:
+      - 'gitlab'
+    image: gitlab/gitlab-runner:latest
+    restart: always
+    volumes:
+      - ./gitlab-runner-config.toml:/etc/gitlab-runner/config.toml
+      - /var/run/docker.sock:/var/run/docker.sock
+    network_mode: host
+
+  nexus:
+    container_name: nexus
+    image: sonatype/nexus3
+    restart: always
+    volumes:
+      - nexus-data:/nexus-data
+    network_mode: host
+volumes:
+  nexus-data: {}

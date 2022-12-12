@@ -1,0 +1,35 @@
+stages:
+  - build
+  - deploy
+
+build:
+  only:
+    - main
+  stage: build
+  image: docker
+  services:
+    - docker:dind
+  script:
+    - docker build . --tag localhost:9001/cicd-example:latest
+    - docker image ls
+    - docker login -u $user -p $password localhost:9001
+    - docker push localhost:9001/cicd-example:latest
+  variables:
+    DOCKER_TLS_CERTDIR: ""
+  tags:
+    - build
+
+deploy:
+  only:
+    - main
+  stage: deploy
+  image: docker
+  services:
+    - docker:dind
+  script:
+    - docker login -u $user -p $password localhost:9001
+    - docker run -d -p 3000:3000 localhost:9001/cicd-example:latest
+  variables:
+    DOCKER_TLS_CERTDIR: ""
+  tags:
+    - deploy
