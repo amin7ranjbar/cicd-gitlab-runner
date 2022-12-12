@@ -8,7 +8,7 @@ shutdown_timeout = 0
 [[runners]]
   name = "myDokerRunner"
   url = "http://localhost/"
-  id = 58
+  id = 1
   token = "eiVgx6zyCCMdU_yXex4t"
   token_obtained_at = 2022-12-11T07:59:43Z
   token_expires_at = 0001-01-01T00:00:00Z
@@ -28,5 +28,6 @@ shutdown_timeout = 0
     allowed_pull_policies = ["always","if-not-present"]
     network_mode = "host"
     disable_cache = false
+    environment = ["FF_GITLAB_REGISTRY_HELPER_IMAGE=0"]
     volumes = ["/var/run/docker.sock:/var/run/docker.sock","/cache"]
     shm_size = 0

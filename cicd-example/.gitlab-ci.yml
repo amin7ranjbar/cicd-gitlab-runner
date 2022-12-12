@@ -2,20 +2,22 @@ stages:
   - build
   - deploy
 
+image: docker
+services:
+  - docker:dind
+variables:
+  DOCKER_TLS_CERTDIR: ""
+
+before_script:
+  - echo -n $password | docker login -u $user --password-stdin localhost:9001
+
 build:
   only:
     - main
   stage: build
-  image: docker
-  services:
-    - docker:dind
   script:
     - docker build . --tag localhost:9001/cicd-example:latest
-    - docker image ls
-    - docker login -u $user -p $password localhost:9001
     - docker push localhost:9001/cicd-example:latest
-  variables:
-    DOCKER_TLS_CERTDIR: ""
   tags:
     - build
 
@@ -23,13 +25,8 @@ deploy:
   only:
     - main
   stage: deploy
-  image: docker
-  services:
-    - docker:dind
   script:
-    - docker login -u $user -p $password localhost:9001
-    - docker run -d -p 3000:3000 localhost:9001/cicd-example:latest
-  variables:
-    DOCKER_TLS_CERTDIR: ""
+    - docker rm -f cicd-example
+    - docker run -d --name cicd-example -p 3000:3000 localhost:9001/cicd-example:latest
   tags:
     - deploy
